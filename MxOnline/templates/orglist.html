@@ -153,27 +153,3 @@
         </div>
 </section>
 {% endblock %}
-{% block custom_js %}
-<script>
-    $(function(){
-        $('#jsStayBtn').on('click', function(){
-            $.ajax({
-                cache: false,
-                type: "POST",
-                url:"{% url 'org1:add_ask1' %}",
-                data:$('#jsStayForm').serialize(),
-                async: true,
-                success: function(data) {
-                    if(data.status == 'success'){
-                        $('#jsStayForm')[0].reset();
-                        alert("提交成功")
-                    }else if(data.status == 'fail'){
-                        $('#jsCompanyTips').html(data.msg)
-                    }
-                },
-            });
-        });
-    })
-
-</script>
-{% endblock %}

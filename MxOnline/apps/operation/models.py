@@ -26,6 +26,7 @@ class CourseComments(models.Model):
     "课程评论"
     user = models.ForeignKey(UserProfile,verbose_name=u"用户名")
     course =models.ForeignKey(Course,verbose_name=u"课程名")
+    comments = models.CharField(default='',max_length=200, verbose_name=u'评论内容')
     add_time =models.DateTimeField(default=datetime.now,verbose_name=u"添加时间")
 
     class Meta:

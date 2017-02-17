@@ -6,7 +6,7 @@ from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse
 
 
-from .models import CourseOrg,CityDict
+from .models import CourseOrg,CityDict,Teacher
 from forms import UserAskForm
 from courses.models import Course
 from  operation.models import UserFavorite
@@ -185,3 +185,11 @@ class OrgAddFavView(View):
                 return HttpResponse('{"status":"fail","msg":"收藏出错"}', content_type="application/json")
 
 
+class TeacherListView(View):
+    #课程讲师列表页
+    def get(self,request):
+        all_tecaher = Teacher.objects.all()
+
+        return render(request,'teachers-list.html',{
+            "all_tecaher":all_tecaher
+        })

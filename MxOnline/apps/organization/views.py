@@ -189,7 +189,49 @@ class TeacherListView(View):
     #课程讲师列表页
     def get(self,request):
         all_tecaher = Teacher.objects.all()
+        all_tecahers = all_tecaher.count()
+        hots = request.GET.get('sort','')
+        if hots == 'hot':
+            all_tecaher = all_tecaher.order_by('-click_nums')
 
+        soted_tecaher = Teacher.objects.all().order_by('-click_nums')[:3]
+
+        try:
+            page = request.GET.get('page', 1)
+        except PageNotAnInteger:
+            page = 1
+            # Provide Paginator with the request object for complete querystring generation
+
+        p = Paginator(all_tecaher, 2, request=request)
+
+        tacahers = p.page(page)
         return render(request,'teachers-list.html',{
-            "all_tecaher":all_tecaher
+            "tacahers":tacahers,
+            "all_tecaher":all_tecaher,
+            "all_tecahers":all_tecahers,
+            "soted_tecaher":soted_tecaher
+        })
+
+
+class TeacherDetilView(View):
+    #教师列表
+    def get(self,request,teacher_id):
+        teacher = Teacher.objects.get(id=int(teacher_id))
+        teacher.click_nums +=1
+        teacher.save()
+        all_course = Course.objects.filter(teacher=teacher)
+        has_teacher_faved = False
+        if UserFavorite.objects.filter(user=request.user,fav_id=teacher_id,fav_type=3):
+            has_teacher_faved=True
+        has_org_faved = False
+        if UserFavorite.objects.filter(user=request.user,fav_id=teacher.org_id,fav_type=2):
+            has_org_faved=True
+        soted_tecaher = Teacher.objects.all().order_by('-click_nums')[:3]
+
+        return render(request,'teacher-detail.html',{
+            "all_course":all_course,
+            "teacher":teacher,
+            "soted_tecaher":soted_tecaher,
+            "has_teacher_faved":has_teacher_faved,
+            "has_org_faved":has_org_faved
         })
